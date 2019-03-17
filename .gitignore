@@ -1,0 +1,62 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Other
+*.hex
+*.elf
+*.map
+*.s
+*.i
+*.ii
+
+# Documentation
+/examples/Native project/docs/html
+/examples/Native project/docs/man
+/examples/Native project/docs/rtf
+/examples/Native project/docs/xml
+/examples/Native project/docs/latex
+/examples/AVR project/docs/html
+/examples/AVR project/docs/man
+/examples/AVR project/docs/rtf
+/examples/AVR project/docs/xml
+/examples/AVR project/docs/latex
+
+# Windows
+*.ini
+
+# IDEs
+*.sublime-project
+*.sublime-workspace
+
+# Static analyzers
+*.cppcheck
