@@ -6,15 +6,30 @@ Configurable Makefile
 
 *Configurable Makefile for compiling executable and library projects, natively and for AVR.*
 
+</br>
+
+Table of Contents
+-----------------
+ - [Prerequisites](#prerequisites)
+ - [Installing](#installing)
+   + [GCC and Make](#gcc-and-make)
+     * [Windows](#windows)
+   + [Configurable Makefile](#configurable-makefile-1)
+     * [New executable native project](#new-executable-native-project)
+     * ["Native project" example](#native-project-example)
+     * ["AVR project" example](#avr-project-example)
+ - [Configuring the *`Makefile`*](#configuring-the-makefile)
+ - [Commands](#commands)
+ - [License](#license)
 
 Prerequisites
-=============
+-------------
  - GCC
  - Make
 
 
 Installing
-==========
+----------
 ### GCC and Make
 #### Windows:
  - Download [MinGW][mingw_home] or [CygWin][cygwin_home].
@@ -48,12 +63,12 @@ Installing
 
 
 Configuring the *`Makefile`*
-============================
+----------------------------
 See the instructions inside *`Makefile`*.
 
 
 Commands
-========
+--------
 | Command                            | Description                                                                                    | Native executable      | AVR executable         | Library                          |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------- | ---------------------- | -------------------------------- |
 | `make init`                        | creates folders for the project based on the user configuration                                |                        |                        |                                  |
@@ -84,7 +99,7 @@ Commands
 
 
 License
-=======
+-------
 The MIT License (MIT)
 
 Copyright (c) 2019 Vasil Kalchev
