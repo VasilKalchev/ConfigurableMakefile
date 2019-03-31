@@ -6,18 +6,14 @@ Configurable Makefile
 
 *Configurable Makefile for compiling executable and library projects, natively and for AVR.*
 
-</br>
+---
 
 Table of Contents
 -----------------
  - [Prerequisites](#prerequisites)
  - [Installing](#installing)
    + [GCC and Make](#gcc-and-make)
-     * [Windows](#windows)
    + [Configurable Makefile](#configurable-makefile-1)
-     * [New executable native project](#new-executable-native-project)
-     * ["Native project" example](#native-project-example)
-     * ["AVR project" example](#avr-project-example)
  - [Configuring the *`Makefile`*](#configuring-the-makefile)
  - [Commands](#commands)
  - [License](#license)
@@ -69,6 +65,8 @@ See the instructions inside *`Makefile`*.
 
 Commands
 --------
+### All
+
 | Command                            | Description                                                                                    | Native executable      | AVR executable         | Library                          |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------- | ---------------------- | -------------------------------- |
 | `make init`                        | creates folders for the project based on the user configuration                                |                        |                        |                                  |
@@ -84,8 +82,11 @@ Commands
 | `make clean`                       | cleans the project generated files                                                             |                        |                        |                                  |
 | `make clean_all`                   | in addition to `clean` also "cleans" the dependencies                                          |                        |                        |                                  |
 | `make clean_<STATIC_LIBRARY_NAME>` | cleans the specified static library                                                            |                        |                        |                                  |
-|                                    |                                                                                                |                        |                        |                                  |
-| **AVR only**                       |                                                                                                |                        |                        |                                  |
+
+### AVR only
+
+| Command                            | Description                                                                                    | Native executable      | AVR executable         | Library                          |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------- | ---------------------- | -------------------------------- |
 | `make program`                     | links to an executable, converts the executable to ihex format and writes it to the target AVR | *disabled*             |                        | *disabled*                       |
 | `make program_flash`               | *same as `make program`*                                                                       | *disabled*             |                        | *disabled*                       |
 | `make download_flash`              | reads the AVR's flash into a file                                                              | *disabled*             |                        | *disabled*                       |
@@ -95,7 +96,6 @@ Commands
 | `make download_fuses`              | reads the AVR's fuses into files                                                               | *disabled*             |                        | *disabled*                       |
 | `make <TARGET>.hex`                | compiles, links and converts to ihex                                                           | *disabled*             |                        | *disabled*                       |
 | `make <TARGET>.eep`                | compiles, links and converts to ihex (just the .eeprom section)                                | *disabled*             |                        | *disabled*                       |
-| **Command**                        | **Description**                                                                                | **Native executable**  | **AVR executable**     | **Library**                      |
 
 
 License
