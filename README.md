@@ -6,7 +6,6 @@ Configurable Makefile
 
 *Configurable Makefile for compiling executable and library projects, natively and for AVR.*
 
----
 
 Table of Contents
 -----------------
