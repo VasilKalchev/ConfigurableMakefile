@@ -11,6 +11,7 @@
 
 # Commands:
 # ---------
+# All
 #| Command                            | Description                                                                                    | Native executable      | AVR executable         | Library                          |
 #| ---------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------- | ---------------------- | -------------------------------- |
 #| `make init`                        | creates folders for the project based on the user configuration                                |                        |                        |                                  |
@@ -26,8 +27,10 @@
 #| `make clean`                       | cleans the project generated files                                                             |                        |                        |                                  |
 #| `make clean_all`                   | in addition to `clean` also "cleans" the dependencies                                          |                        |                        |                                  |
 #| `make clean_<STATIC_LIBRARY_NAME>` | cleans the specified static library                                                            |                        |                        |                                  |
-#|                                    |                                                                                                |                        |                        |                                  |
-#| **AVR only**                       |                                                                                                |                        |                        |                                  |
+#
+# AVR only
+#| Command                            | Description                                                                                    | Native executable      | AVR executable         | Library                          |
+#| ---------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------- | ---------------------- | -------------------------------- |
 #| `make program`                     | links to an executable, converts the executable to ihex format and writes it to the target AVR | *disabled*             |                        | *disabled*                       |
 #| `make program_flash`               | *same as `make program`*                                                                       | *disabled*             |                        | *disabled*                       |
 #| `make download_flash`              | reads the AVR's flash into a file                                                              | *disabled*             |                        | *disabled*                       |
@@ -37,7 +40,6 @@
 #| `make download_fuses`              | reads the AVR's fuses into files                                                               | *disabled*             |                        | *disabled*                       |
 #| `make <TARGET>.hex`                | compiles, links and converts to ihex                                                           | *disabled*             |                        | *disabled*                       |
 #| `make <TARGET>.eep`                | compiles, links and converts to ihex (just the .eeprom section)                                | *disabled*             |                        | *disabled*                       |
-#| **Command**                        | **Description**                                                                                | **Native executable**  | **AVR executable**     | **Library**                      |
 
 # What can be added:
 # ------------------
@@ -79,9 +81,6 @@ TARGET := Ext2
 ## the output will be placed under a folder with the same name (e.g.
 ## /bin/x86/Debug/main.exe). 
 TARGET_ARCHITECTURE := #(empty), x86, AVR...
-
-# Specify the host platform, so the correct shell will be used.
-HOST_PLATFORM := windows# windows or nix
 
 # The default build type that will be used. Available options are
 ## `DEBUG`, `RELEASE` or leaving it empty. To select different build
@@ -180,8 +179,9 @@ HIGH_FUSE := 0xDE
 EXT_FUSE := 0x05
 
 # Choose the printf and scanf libraries that will be linked.
-PRINTF_LIB := #(empty), minimal or float
-SCANF_LIB := #(empty), minimal or float
+PRINTF_LIB := minimal#minimal, (empty) or float
+SCANF_LIB := minimal#minimal, (empty) or float
+UART_BAUD := 9600
 endif
 # AVR specific configuration ~~~~~
 
@@ -191,6 +191,7 @@ CC_OPTIONS := -MMD # needed for generating header dependency files
 CC_OPTIONS += -ffunction-sections -fdata-sections
 CC_OPTIONS += -g # produce debugging information for GDB
 CC_OPTIONS += -save-temps=obj
+CC_OPTIONS += -time # report the CPU time taken by compilation
 CC_WARNINGS := -Wall -Wextra -Werror -pedantic #-pedantic-errors
 CC_WARNINGS += -Wunreachable-code -Wsign-compare #-Weffc++
 CC_OPTIMIZATION := -Os
@@ -200,7 +201,8 @@ CC_STANDARD := -std=gnu++98 #gnu++11
 ifeq ($(TARGET_ARCHITECTURE), AVR)
 CC := avr-g++
 CC_OPTIONS += -mcall-prologues
-CC_OPTIONS += -fno-threadsafe-statics -fno-exceptions
+# CC_OPTIONS += -fno-threadsafe-statics
+CC_OPTIONS += -fno-exceptions
 CC_OPTIONS += -ffunction-sections -fdata-sections
 CC_OPTIONS += -funsigned-char
 CC_OPTIONS += -funsigned-bitfields
@@ -261,6 +263,7 @@ MKDIR := -mkdir
 GENERATE_DOCUMENTATION := TRUE
 DOC_TOOL := doxygen
 DOC_CONFIG_FILE := Doxyfile# the name of the doxygen config file
+DOC_TOOL_SUBFOLDER := Doxygen
 
 SIZE := size
 OBJDUMP := objdump
@@ -278,20 +281,18 @@ endif
 
 # 3. LOGIC ----------------------------------------------------------
 # Platform -----
-ifeq ($(HOST_PLATFORM), windows)
-SHELL = C:/Windows/System32/cmd.exe
-else ifeq ($(HOST_PLATFORM), nix)
-SHELL = /bin/sh
+ifeq ($(OS),Windows_NT)
+	SHELL = C:/Windows/System32/cmd.exe
+	EXE_EXTENSION := exe
 else
-$(error Invalid host platform: `$(HOST_PLATFORM)`! Valid choises: `windows` or `nix`.)
+	SHELL = /bin/sh
+	EXE_EXTENSION := out
 endif
-# Platform ~~~~~
 
-
-EXE_EXTENSION := exe
 ifeq ($(TARGET_ARCHITECTURE), AVR)
 EXE_EXTENSION := elf
 endif
+# Platform ~~~~~
 
 
 ifeq ($(BUILD_TYPE), RELEASE)
@@ -341,7 +342,7 @@ endif
 
 # Compiler flags -----
 ifeq ($(TARGET_ARCHITECTURE), AVR)
-CC_FLAGS += -mmcu=$(MCU) -DF_CPU=$(F_CPU)
+CC_FLAGS += -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DBAUD=$(UART_BAUD)
 endif
 
 CC_FLAGS := $(CC_OPTIONS) $(CC_WARNINGS) $(CC_OPTIMIZATION) $(CC_STANDARD)
@@ -408,20 +409,19 @@ endif # if project_type
 init:
 	@echo Initializing folder structure...
 	$(MKDIR) "$(BUILD_DIR)"
-	$(MKDIR) "$(BUILD_DIR_OTHER)"
 	$(MKDIR) "$(DEPS_DIR)"
 	$(MKDIR) "$(SRC_DIR)"
 	$(MKDIR) "$(DOCS_DIR)"
 	$(MKDIR) "$(TESTS_DIR)"
 ifeq ($(PROJECT_TYPE), executable)
 	$(MKDIR) "$(BIN_DIR)"
-	$(MKDIR) "$(BIN_DIR_OTHER)"
 else ifeq ($(PROJECT_TYPE), staticLibrary)
 	$(MKDIR) "$(INLCUDE_DIR)"
 	$(MKDIR) "$(LIB_DIR)"
 	$(MKDIR) "$(EXAMPLES_DIR)"
 endif
 	@echo $(DIVIDER)
+
 
 ifeq ($(PROJECT_TYPE), executable)
 ifeq ($(TARGET_ARCHITECTURE), AVR)
@@ -592,7 +592,7 @@ endif
 docs:
 ifeq ($(GENERATE_DOCUMENTATION), TRUE)
 	@echo Generating documentation...
-	$(DOC_TOOL) $(DOCS_DIR)/$(DOC_CONFIG_FILE)
+	cd $(DOCS_DIR)/$(DOC_TOOL_SUBFOLDER) && $(DOC_TOOL) $(DOC_CONFIG_FILE)
 	@echo $(DIVIDER)
 else
 	@echo Skipping generation of documentation, because it is disabled.
