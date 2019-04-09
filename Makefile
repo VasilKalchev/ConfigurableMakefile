@@ -75,7 +75,6 @@ else ifeq ($(PROJECT_TYPE), staticLibrary)
 INLCUDE_DIR := include# public headers
 LIB_DIR := lib# static library archive
 EXAMPLES_DIR := examples
-INCLUDE_DIR := include# public headers
 else
 $(error Invalid project type: '$(PROJECT_TYPE)' !)
 endif
@@ -225,8 +224,11 @@ endif
 
 
 # Other tools -----
-RM := -rm
 MKDIR := -mkdir
+MV = mv
+CP = cp
+RM := -rm
+SEPARATOR = &
 
 # Enable/disable documentation generation.
 GENERATE_DOCUMENTATION := TRUE
@@ -407,53 +409,56 @@ help:
 	@echo ConfigurableMakefile 1.1.0
 ifeq ($(PROJECT_TYPE), executable)
 ifeq ($(TARGET_ARCHITECTURE), AVR)
-	@echo `make init` - creates folders for the project based on the user configuration
-	@echo `make` - compiles and links to an executable
-	@echo `make all` - in addition to `make` also compiles and runs the tests and generates the documentation
-	@echo `make ObjectDump` - extracts information from the linked object into (TARGET).lss file
-	@echo `make SymbolTable` - extracts symbol table from the linked object into (TARGET).sym file
-	@echo `make deps` - "makes" all static library dependencies
-	@echo `make [STATIC_LIBRARY_NAME]` - "makes" the specified static library
-	@echo `make tests` - compiles and runs the tests
-	@echo `make docs` - generates the documentation
-	@echo `make clean` - cleans the project generated files
-	@echo `make clean_all` - in addition to `clean` also "cleans" the dependencies
-	@echo `make clean_[STATIC_LIBRARY_NAME]` - cleans the specified static library
-	@echo `make program` - links to an executable, converts the executable to ihex format and writes it to the target AVR
+	@echo `make init` - create folders for the project based on the user configuration
+	@echo `make` - compile and link to an executable
+	@echo `make all` - in addition to `make` also compile and run the tests and generates the documentation
+	@echo `make ObjectDump` - extract information from the linked object into (TARGET).lss file
+	@echo `make SymbolTable` - extract symbol table from the linked object into (TARGET).sym file
+	@echo `make deps` - "make" all static library dependencies
+	@echo `make [STATIC_LIBRARY_NAME]` - "make" the specified static library
+	@echo `make tests` - compile and run the tests
+	@echo `make docs` - generate the documentation
+	@echo `make clean` - clean the project generated files
+	@echo `make clean_all` - in addition to `clean` also "clean" the dependencies
+	@echo `make clean_[STATIC_LIBRARY_NAME]` - clean the specified static library
+	@echo `make program` - link to an executable, convert the executable to ihex format and write it to the target AVR
 	@echo `make program_flash` - same as `make program`
-	@echo `make download_flash` - reads the AVR's flash into a file
-	@echo `make program_eeprom` - `make program` but writes the EEPROM
-	@echo `make download_eeprom` - reads the AVR's eeprom into a file
-	@echo `make program_fuses` - writes the configured fuse settings to the target AVR
-	@echo `make download_fuses` - reads the AVR's fuses into files
-	@echo `make [TARGET].hex` - compiles, links and converts to ihex
-	@echo `make [TARGET].eep` - compiles, links and converts to ihex (just the .eeprom section)
+	@echo `make download_flash` - read the AVR's flash into a file
+	@echo `make program_eeprom` - `make program` but write the EEPROM
+	@echo `make download_eeprom` - read the AVR's eeprom into a file
+	@echo `make program_fuses` - write the configured fuse settings to the target AVR
+	@echo `make download_fuses` - read the AVR's fuses into files
+	@echo `make [TARGET].hex` - compile, link and convert to ihex
+	@echo `make [TARGET].eep` - compile, link and convert to ihex (just the .eeprom section)
+	@echo `make export_arduino EXPORT_DIR=../[PROJECT_DIR]` - export to Arduino style executable
 else
-	@echo `make init` - creates folders for the project based on the user configuration
-	@echo `make` - compiles and links to an executable
-	@echo `make all` - in addition to `make` also compiles and runs the tests and generates the documentation
-	@echo `make ObjectDump` - extracts information from the linked object into (TARGET).lss file
-	@echo `make SymbolTable` - extracts symbol table from the linked object into (TARGET).sym file
-	@echo `make deps` - "makes" all static library dependencies
-	@echo `make [STATIC_LIBRARY_NAME]` - "makes" the specified static library
-	@echo `make tests` - compiles and runs the tests
-	@echo `make docs` - generates the documentation
-	@echo `make clean` - cleans the project generated files
-	@echo `make clean_all` - in addition to `clean` also "cleans" the dependencies
-	@echo `make clean_[STATIC_LIBRARY_NAME]` - cleans the specified static library
-	@echo `make run` - runs the executable
+	@echo `make init` - create folders for the project based on the user configuration
+	@echo `make` - compile and link to an executable
+	@echo `make all` - in addition to `make` also compile and run the tests and generate the documentation
+	@echo `make ObjectDump` - extract information from the linked object into (TARGET).lss file
+	@echo `make SymbolTable` - extract symbol table from the linked object into (TARGET).sym file
+	@echo `make deps` - "make" all static library dependencies
+	@echo `make [STATIC_LIBRARY_NAME]` - "make" the specified static library
+	@echo `make tests` - compile and runs the tests
+	@echo `make docs` - generate the documentation
+	@echo `make clean` - clean the project generated files
+	@echo `make clean_all` - in addition to `clean` also "clean" the dependencies
+	@echo `make clean_[STATIC_LIBRARY_NAME]` - clean the specified static library
+	@echo `make run` - run the executable
+	@echo `make export_arduino EXPORT_DIR=../[PROJECT_DIR]` - export to Arduino style executable
 endif
 else ifeq ($(PROJECT_TYPE), staticLibrary)
-	@echo `make init` - creates folders for the project based on the user configuration
-	@echo `make` - compiles and creates a static library archive
-	@echo `make all` - in addition to `make` also compiles and runs the tests and generates the documentation
-	@echo `make deps` - "makes" all static library dependencies
-	@echo `make [STATIC_LIBRARY_NAME]` - "makes" the specified static library
-	@echo `make tests` - compiles and runs the tests
-	@echo `make docs` - generates the documentation
-	@echo `make clean` - cleans the project generated files
-	@echo `make clean_all` - in addition to `clean` also "cleans" the dependencies
-	@echo `make clean_[STATIC_LIBRARY_NAME]` - cleans the specified static library
+	@echo `make init` - create folders for the project based on the user configuration
+	@echo `make` - compile and create a static library archive
+	@echo `make all` - in addition to `make` also compile and run the tests and generate the documentation
+	@echo `make deps` - "make" all static library dependencies
+	@echo `make [STATIC_LIBRARY_NAME]` - "make" the specified static library
+	@echo `make tests` - compile and run the tests
+	@echo `make docs` - generate the documentation
+	@echo `make clean` - clean the project generated files
+	@echo `make clean_all` - in addition to `clean` also "clean" the dependencies
+	@echo `make clean_[STATIC_LIBRARY_NAME]` - clean the specified static library
+	@echo `make export_arduino EXPORT_DIR=../[PROJECT_DIR]` - export to Arduino style library
 endif
 	@echo $(DIVIDER)
 
@@ -624,6 +629,32 @@ else
 	@echo Skipping generation of documentation, because it is disabled.
 endif
 # Documentation ~~~~~
+
+
+# Exports -----
+export_arduino:
+ifeq ($(EXPORT_DIR),)
+	@echo Specify export directory: `make export_arduino EXPORT_DIR=../MyProject`
+else
+ifeq ($(PROJECT_TYPE), executable)
+	@echo Exporting to Arduino style executable in $(EXPORT_DIR) ...
+	$(MKDIR) "$(EXPORT_DIR)/src/$(TARGET)"
+	$(foreach src_dir,$(SRC_DIRS_ALL),cp $(src_dir)/* $(EXPORT_DIR)/src/$(TARGET)/ $(SEPARATOR))
+	$(MV) $(EXPORT_DIR)/src/$(TARGET)/$(TARGET).$(SRC_EXTENSION) $(EXPORT_DIR)/src/$(TARGET)/$(TARGET).ino
+	$(CP) $(DOCS_DIR) -r $(EXPORT_DIR)/
+	$(CP) $(TESTS_DIR) -r $(EXPORT_DIR)/
+else ifeq ($(PROJECT_TYPE), staticLibrary)
+	@echo Exporting to Arduino style library in $(EXPORT_DIR) ...
+	$(MKDIR) "$(EXPORT_DIR)/src"
+	$(foreach src_dir,$(SRC_DIRS_ALL),cp $(src_dir)/* $(EXPORT_DIR)/src/ $(SEPARATOR))
+	$(MKDIR) "$(EXPORT_DIR)/examples"
+	$(CP) $(INCLUDE_DIR)/* -r $(EXPORT_DIR)/src/
+	$(CP) $(DOCS_DIR) -r $(EXPORT_DIR)/
+	$(CP) $(EXAMPLES_DIR)/* -r $(EXPORT_DIR)/examples/
+endif
+endif
+	@echo $(DIVIDER)
+# Exports ~~~~~
 
 
 clean:

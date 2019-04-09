@@ -2,6 +2,8 @@ Changelog:
 ----------
 
 ## [Unreleased]
+### Added
+ - Exporting to Arduino style executable/library
 
 ## [1.1.0] - 2019-04-06
 ### Added
