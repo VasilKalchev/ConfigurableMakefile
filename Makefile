@@ -3,43 +3,12 @@
 
 # How to use it:
 # --------------
+# Run `make help` to see the available commands.
 # Almost all of the user configuration is done in section "2. USER
 # CONFIGURATION".
 # When using static libraries as dependencies, additional rules for
 # making and cleaning the libraries must be added manually (search
 # for `USER_CONFIG_STATIC_LIBS`).
-
-# Commands:
-# ---------
-# All
-#| Command                            | Description                                                                                    | Native executable      | AVR executable         | Library                          |
-#| ---------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------- | ---------------------- | -------------------------------- |
-#| `make init`                        | creates folders for the project based on the user configuration                                |                        |                        |                                  |
-#| `make`                             | compiles and...                                                                                | links to an executable | links to an executable | creates a static library archive |
-#| `run`                              | runs the executable                                                                            |                        | *disabled*             | *disabled*                       |
-#| `make all`                         | in addition to `make` compiles and runs the tests and generates the documentation              |                        |                        |                                  |
-#| `make ObjectDump`                  | extracts information from the linked object into *`(TARGET).lss`* file                         |                        |                        | *disabled*                       |
-#| `make SymbolTable`                 | extracts symbol table from the linked object into *`(TARGET).sym`* file                        |                        |                        | *disabled*                       |
-#| `make deps`                        | "makes" all static library dependencies                                                        |                        |                        |                                  |
-#| `make <STATIC_LIBRARY_NAME>`       | "makes" the specified static library                                                           |                        |                        |                                  |
-#| `make tests`                       | compiles and runs the tests                                                                    |                        |                        |                                  |
-#| `make docs`                        | generates the documentation                                                                    |                        |                        |                                  |
-#| `make clean`                       | cleans the project generated files                                                             |                        |                        |                                  |
-#| `make clean_all`                   | in addition to `clean` also "cleans" the dependencies                                          |                        |                        |                                  |
-#| `make clean_<STATIC_LIBRARY_NAME>` | cleans the specified static library                                                            |                        |                        |                                  |
-#
-# AVR only
-#| Command                            | Description                                                                                    | Native executable      | AVR executable         | Library                          |
-#| ---------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------- | ---------------------- | -------------------------------- |
-#| `make program`                     | links to an executable, converts the executable to ihex format and writes it to the target AVR | *disabled*             |                        | *disabled*                       |
-#| `make program_flash`               | *same as `make program`*                                                                       | *disabled*             |                        | *disabled*                       |
-#| `make download_flash`              | reads the AVR's flash into a file                                                              | *disabled*             |                        | *disabled*                       |
-#| `make program_eeprom`              | `make program` but only writes the EEPROM                                                      | *disabled*             |                        | *disabled*                       |
-#| `make download_eeprom`             | reads the AVR's eeprom into a file                                                             | *disabled*             |                        | *disabled*                       |
-#| `make program_fuses`               | writes the configured fuse settings to the target AVR                                          | *disabled*             |                        | *disabled*                       |
-#| `make download_fuses`              | reads the AVR's fuses into files                                                               | *disabled*             |                        | *disabled*                       |
-#| `make <TARGET>.hex`                | compiles, links and converts to ihex                                                           | *disabled*             |                        | *disabled*                       |
-#| `make <TARGET>.eep`                | compiles, links and converts to ihex (just the .eeprom section)                                | *disabled*             |                        | *disabled*                       |
 
 # What can be added:
 # ------------------
@@ -432,6 +401,61 @@ run: $(BIN_DIR)/$(TARGET).$(EXE_EXTENSION)
 	@echo $(DIVIDER)
 endif
 endif
+
+
+help:
+	@echo ConfigurableMakefile 1.1.0
+ifeq ($(PROJECT_TYPE), executable)
+ifeq ($(TARGET_ARCHITECTURE), AVR)
+	@echo `make init` - creates folders for the project based on the user configuration
+	@echo `make` - compiles and links to an executable
+	@echo `make all` - in addition to `make` also compiles and runs the tests and generates the documentation
+	@echo `make ObjectDump` - extracts information from the linked object into (TARGET).lss file
+	@echo `make SymbolTable` - extracts symbol table from the linked object into (TARGET).sym file
+	@echo `make deps` - "makes" all static library dependencies
+	@echo `make [STATIC_LIBRARY_NAME]` - "makes" the specified static library
+	@echo `make tests` - compiles and runs the tests
+	@echo `make docs` - generates the documentation
+	@echo `make clean` - cleans the project generated files
+	@echo `make clean_all` - in addition to `clean` also "cleans" the dependencies
+	@echo `make clean_[STATIC_LIBRARY_NAME]` - cleans the specified static library
+	@echo `make program` - links to an executable, converts the executable to ihex format and writes it to the target AVR
+	@echo `make program_flash` - same as `make program`
+	@echo `make download_flash` - reads the AVR's flash into a file
+	@echo `make program_eeprom` - `make program` but writes the EEPROM
+	@echo `make download_eeprom` - reads the AVR's eeprom into a file
+	@echo `make program_fuses` - writes the configured fuse settings to the target AVR
+	@echo `make download_fuses` - reads the AVR's fuses into files
+	@echo `make [TARGET].hex` - compiles, links and converts to ihex
+	@echo `make [TARGET].eep` - compiles, links and converts to ihex (just the .eeprom section)
+else
+	@echo `make init` - creates folders for the project based on the user configuration
+	@echo `make` - compiles and links to an executable
+	@echo `make all` - in addition to `make` also compiles and runs the tests and generates the documentation
+	@echo `make ObjectDump` - extracts information from the linked object into (TARGET).lss file
+	@echo `make SymbolTable` - extracts symbol table from the linked object into (TARGET).sym file
+	@echo `make deps` - "makes" all static library dependencies
+	@echo `make [STATIC_LIBRARY_NAME]` - "makes" the specified static library
+	@echo `make tests` - compiles and runs the tests
+	@echo `make docs` - generates the documentation
+	@echo `make clean` - cleans the project generated files
+	@echo `make clean_all` - in addition to `clean` also "cleans" the dependencies
+	@echo `make clean_[STATIC_LIBRARY_NAME]` - cleans the specified static library
+	@echo `make run` - runs the executable
+endif
+else ifeq ($(PROJECT_TYPE), staticLibrary)
+	@echo `make init` - creates folders for the project based on the user configuration
+	@echo `make` - compiles and creates a static library archive
+	@echo `make all` - in addition to `make` also compiles and runs the tests and generates the documentation
+	@echo `make deps` - "makes" all static library dependencies
+	@echo `make [STATIC_LIBRARY_NAME]` - "makes" the specified static library
+	@echo `make tests` - compiles and runs the tests
+	@echo `make docs` - generates the documentation
+	@echo `make clean` - cleans the project generated files
+	@echo `make clean_all` - in addition to `clean` also "cleans" the dependencies
+	@echo `make clean_[STATIC_LIBRARY_NAME]` - cleans the specified static library
+endif
+	@echo $(DIVIDER)
 
 
 debug:
